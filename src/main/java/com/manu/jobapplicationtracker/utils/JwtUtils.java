@@ -1,6 +1,5 @@
 package com.manu.jobapplicationtracker.utils;
 
-import com.manu.jobapplicationtracker.exceptions.JwtExpiredException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -21,10 +20,6 @@ public class JwtUtils {
     ){
         this.jwtExpiration = jwtExpiration;
         this.jwtSecret = jwtSecret;
-    }
-
-    public boolean isJwtValid(String jwt) throws JwtExpiredException {
-        return !jwt.isBlank() && !isExpired(jwt);
     }
 
     public String getSubject(String jwt) {
@@ -55,14 +50,6 @@ public class JwtUtils {
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
-    }
-
-    private boolean isExpired(String jwt) throws JwtExpiredException {
-        if (getClaims(jwt).getExpiration().before(new Date())) {
-            throw new JwtExpiredException();
-        } else {
-            return false;
-        }
     }
 
 }

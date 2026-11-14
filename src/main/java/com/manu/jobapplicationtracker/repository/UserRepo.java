@@ -10,4 +10,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepo extends JpaRepository<User,String> {
     User findByEmail(String email);
+
+    void deleteByEmail(String email);
 }
