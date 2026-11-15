@@ -31,7 +31,7 @@ public class JwtUtils {
                 .builder()
                 .claims(new HashMap<>())
                 .signWith(getSigningKey())
-                .header().empty().add("typ", "jwt")
+                .header().empty().add("typ", "JJWT")
                 .and()
                 .subject(id)
                 .issuedAt(new Date())

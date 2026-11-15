@@ -45,13 +45,17 @@ public class JwtFilter extends OncePerRequestFilter {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType("application/json");
                 response.getWriter().write("""
-                        "error":"expired jwt"
+                        {
+                            "error":"expired jwt"
+                        }
                         """);
             } catch (UsernameNotFoundException e) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType("application/json");
                 response.getWriter().write("""
-                        "error":"user not found"
+                        {
+                            "error":"user not found"
+                        }
                         """);
             }
         }
