@@ -1,11 +1,10 @@
 package com.manu.jobapplicationtracker.controller;
 
+import com.manu.jobapplicationtracker.dto.UserRequestDto;
 import com.manu.jobapplicationtracker.dto.UserResponseDto;
 import com.manu.jobapplicationtracker.service.UserService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -23,5 +22,20 @@ public class UserController {
         UserResponseDto userResponseDto = userService.getUser();
         return ResponseEntity
                 .ok(userResponseDto);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<UserResponseDto> updateUser(
+            @RequestBody UserRequestDto userRequestDto
+    ) {
+        UserResponseDto updatedUser = userService.updateUser(userRequestDto);
+        return ResponseEntity
+                .ok(updatedUser);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<String> deleteUser(){
+        userService.deleteUser();
+        return ResponseEntity.ok("User deleted successfully");
     }
 }

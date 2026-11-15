@@ -47,7 +47,7 @@ public class UserService {
                 .build();
     }
 
-    public void updateUser(UserRequestDto userRequestDto) {
+    public UserResponseDto updateUser(UserRequestDto userRequestDto) {
         if (
                 userRequestDto.getEmail().isBlank() ||
                         userRequestDto.getName().isBlank() ||
@@ -59,9 +59,15 @@ public class UserService {
         User user = User.builder()
                 .id(id)
                 .name(userRequestDto.getName())
+                .email(userRequestDto.getEmail())
                 .password(passwordEncoder.encode(userRequestDto.getPassword()))
                 .build();
-        userRepo.save(user);
+       User savedUser =  userRepo.save(user);
+       return UserResponseDto.builder()
+               .name(savedUser.getName())
+               .email(savedUser.getEmail())
+               .id(savedUser.getId())
+               .build();
     }
 
     public UserResponseDto getUser() {
