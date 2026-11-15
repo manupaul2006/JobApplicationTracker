@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException() {
-
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<String> handleRuntimeException() {
+//
+//    }
 }
