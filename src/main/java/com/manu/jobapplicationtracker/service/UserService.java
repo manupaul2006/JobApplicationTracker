@@ -3,88 +3,59 @@ package com.manu.jobapplicationtracker.service;
 import com.manu.jobapplicationtracker.dto.UserRequestDto;
 import com.manu.jobapplicationtracker.dto.UserResponseDto;
 import com.manu.jobapplicationtracker.entity.User;
-import com.manu.jobapplicationtracker.exceptions.EmailAlreadyExistsException;
-import com.manu.jobapplicationtracker.exceptions.InvalidUserDetailsException;
+import com.manu.jobapplicationtracker.exceptions.DuplicateResourceException;
+import com.manu.jobapplicationtracker.exceptions.ResourceNotFoundException;
+import com.manu.jobapplicationtracker.mapper.UserMapper;
 import com.manu.jobapplicationtracker.repository.UserRepo;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+//TODO: Implement Redis
 @Service
 public class UserService {
     private final UserRepo userRepo;
-    private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     UserService(
             UserRepo userRepo,
-            PasswordEncoder passwordEncoder
+            UserMapper userMapper
     ) {
         this.userRepo = userRepo;
-        this.passwordEncoder = passwordEncoder;
+        this.userMapper = userMapper;
     }
 
-    public UserResponseDto addUser(UserRequestDto userRequestDto) throws InvalidUserDetailsException, EmailAlreadyExistsException {
-        if (
-                userRequestDto.getEmail().isBlank() ||
-                        userRequestDto.getName().isBlank() ||
-                        userRequestDto.getPassword().isBlank()
-        ) {
-            throw new InvalidUserDetailsException();
-        }
-        if (userRepo.existsByEmail(userRequestDto.getEmail())) throw new EmailAlreadyExistsException();
-        User user = User.builder()
-                .email(userRequestDto.getEmail())
-                .name(userRequestDto.getName())
-                .password(passwordEncoder.encode(userRequestDto.getPassword()))
-                .build();
+    public UserResponseDto addUser(UserRequestDto userRequestDto) {
+        if (userRepo.existsByEmail(userRequestDto.getEmail())) throw new DuplicateResourceException(
+                "User with this email already exists"
+        );
+        User user = userMapper.mapToUser(userRequestDto);
         User createdUser = userRepo.save(user);
-
-        return UserResponseDto.builder()
-                .id(createdUser.getId())
-                .name(createdUser.getName())
-                .email(createdUser.getEmail())
-                .build();
+        return userMapper.mapToUserResponseDto(createdUser);
     }
 
     public UserResponseDto updateUser(UserRequestDto userRequestDto) {
-        if (
-                userRequestDto.getEmail().isBlank() ||
-                        userRequestDto.getName().isBlank() ||
-                        userRequestDto.getPassword().isBlank()
-        ) {
-            throw new InvalidUserDetailsException();
-        }
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = User.builder()
-                .id(id)
-                .name(userRequestDto.getName())
-                .email(userRequestDto.getEmail())
-                .password(passwordEncoder.encode(userRequestDto.getPassword()))
-                .build();
-       User savedUser =  userRepo.save(user);
-       return UserResponseDto.builder()
-               .name(savedUser.getName())
-               .email(savedUser.getEmail())
-               .id(savedUser.getId())
-               .build();
+        User user = userMapper.mapToUser(userRequestDto);
+        user.setId(id);
+        User savedUser = userRepo.save(user);
+        return userMapper.mapToUserResponseDto(savedUser);
     }
 
     public UserResponseDto getUser() {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
-        User userInDb = userRepo.findById(id).get();
-        return UserResponseDto
-                .builder()
-                .name(userInDb.getName())
-                .id(userInDb.getId())
-                .email(userInDb.getEmail())
-                .build();
+        return userRepo
+                .findById(id)
+                .map(userMapper::mapToUserResponseDto)
+                .get();
     }
 
-    public String getId(String email) throws UsernameNotFoundException {
-        User userInDb = userRepo.findByEmail(email);
-        if(userInDb == null) throw new UsernameNotFoundException("User not found");
-        return userInDb.getId();
+    public String getId(String email) {
+        return userRepo
+                .findByEmail(email)
+                .map(User::getId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User with this email not found")
+                );
     }
 
     public void deleteUser() {

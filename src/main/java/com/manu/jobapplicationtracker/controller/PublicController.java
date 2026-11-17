@@ -1,11 +1,11 @@
 package com.manu.jobapplicationtracker.controller;
 
-import com.manu.jobapplicationtracker.dto.LoginDto;
+import com.manu.jobapplicationtracker.dto.LoginRequestDto;
 import com.manu.jobapplicationtracker.dto.UserRequestDto;
 import com.manu.jobapplicationtracker.dto.UserResponseDto;
-import com.manu.jobapplicationtracker.exceptions.EmailAlreadyExistsException;
 import com.manu.jobapplicationtracker.service.UserService;
 import com.manu.jobapplicationtracker.utils.JwtUtils;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,7 +36,7 @@ public class PublicController {
     @PostMapping("/signup")
     public ResponseEntity<UserResponseDto> signUp(
             @RequestBody UserRequestDto userRequestDto
-    ) throws EmailAlreadyExistsException {
+    ){
         UserResponseDto createdUser = userService.addUser(userRequestDto);
         return ResponseEntity
                 .ok()
@@ -45,12 +45,12 @@ public class PublicController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(
-            @RequestBody LoginDto loginDto
+          @Valid @RequestBody LoginRequestDto loginRequestDto
     ) {
-        String id = userService.getId(loginDto.getEmail());
+        String id = userService.getId(loginRequestDto.getEmail());
        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                id,
-               loginDto.getPassword()
+               loginRequestDto.getPassword()
        ));
        return ResponseEntity
                .ok(jwtUtils.getJwt(id));

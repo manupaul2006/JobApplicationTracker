@@ -1,15 +1,17 @@
 package com.manu.jobapplicationtracker.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserRequestDto {
-    @NonNull
+    @NotBlank(message = "Name cannot be empty")
     private String name;
-    @NonNull
+    @Email(message = "Email should be in valid format")
     private String email;
-    @NonNull
+    @NotBlank(message = "Password cannot be empty")
     private String password;
 }

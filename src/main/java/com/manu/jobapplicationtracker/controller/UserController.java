@@ -17,14 +17,14 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/profile")
+    @GetMapping
     public ResponseEntity<UserResponseDto> getProfile() {
         UserResponseDto userResponseDto = userService.getUser();
         return ResponseEntity
                 .ok(userResponseDto);
     }
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<UserResponseDto> updateUser(
             @RequestBody UserRequestDto userRequestDto
     ) {
@@ -33,7 +33,7 @@ public class UserController {
                 .ok(updatedUser);
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping
     public ResponseEntity<String> deleteUser(){
         userService.deleteUser();
         return ResponseEntity.ok("User deleted successfully");

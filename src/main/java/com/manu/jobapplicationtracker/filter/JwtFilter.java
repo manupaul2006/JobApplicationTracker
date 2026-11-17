@@ -3,6 +3,7 @@ package com.manu.jobapplicationtracker.filter;
 import com.manu.jobapplicationtracker.service.UserDetailServiceImpl;
 import com.manu.jobapplicationtracker.utils.JwtUtils;
 import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -46,17 +47,30 @@ public class JwtFilter extends OncePerRequestFilter {
                 response.setContentType("application/json");
                 response.getWriter().write("""
                         {
-                            "error":"expired jwt"
+                            "errorMessage":"expired jwt"
                         }
                         """);
+                return;
             } catch (UsernameNotFoundException e) {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.setContentType("application/json");
+                response.getWriter().write(
+                        """
+                                {
+                                  "errorMessage" : "User not found"
+                                }
+                                """
+                );
+                return;
+            } catch (JwtException ex) {
                 response.setStatus(HttpStatus.UNAUTHORIZED.value());
                 response.setContentType("application/json");
                 response.getWriter().write("""
                         {
-                            "error":"user not found"
+                            "errorMessage":"Invalid JWT"
                         }
                         """);
+                return;
             }
         }
         filterChain.doFilter(request, response);
