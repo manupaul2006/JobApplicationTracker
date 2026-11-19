@@ -1,4 +1,7 @@
 spring:
+  data:
+    redis:
+      url: ${REDIS_URL}
   application:
     name: jobapplicationtracker
   datasource:

@@ -2,6 +2,7 @@ package com.manu.jobapplicationtracker.mapper;
 
 import com.manu.jobapplicationtracker.dto.UserRequestDto;
 import com.manu.jobapplicationtracker.dto.UserResponseDto;
+import com.manu.jobapplicationtracker.entity.RedisValueEntity;
 import com.manu.jobapplicationtracker.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,14 @@ public class UserMapper {
                 .name(user.getName())
                 .id(user.getId())
                 .email(user.getEmail())
+                .build();
+    }
+
+    public UserResponseDto mapToUserResponseDto(RedisValueEntity value){
+        return  UserResponseDto.builder()
+                .name(value.getName())
+                .id(value.getId())
+                .email(value.getEmail())
                 .build();
     }
 }
