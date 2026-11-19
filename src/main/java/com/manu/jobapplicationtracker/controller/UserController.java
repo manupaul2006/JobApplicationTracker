@@ -1,7 +1,7 @@
 package com.manu.jobapplicationtracker.controller;
 
-import com.manu.jobapplicationtracker.dto.UserRequestDto;
-import com.manu.jobapplicationtracker.dto.UserResponseDto;
+import com.manu.jobapplicationtracker.dto.userdto.UserRequestDto;
+import com.manu.jobapplicationtracker.dto.userdto.UserResponseDto;
 import com.manu.jobapplicationtracker.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

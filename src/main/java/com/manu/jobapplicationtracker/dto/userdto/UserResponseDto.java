@@ -1,4 +1,4 @@
-package com.manu.jobapplicationtracker.dto;
+package com.manu.jobapplicationtracker.dto.userdto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package com.manu.jobapplicationtracker.mapper;
 
-import com.manu.jobapplicationtracker.dto.UserRequestDto;
-import com.manu.jobapplicationtracker.dto.UserResponseDto;
+import com.manu.jobapplicationtracker.dto.userdto.UserRequestDto;
+import com.manu.jobapplicationtracker.dto.userdto.UserResponseDto;
 import com.manu.jobapplicationtracker.entity.RedisValueEntity;
 import com.manu.jobapplicationtracker.entity.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
